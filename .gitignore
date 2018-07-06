@@ -2,3 +2,4 @@
 .idea
 diff.egg-info
 *.pyc
+dist
