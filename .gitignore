@@ -1,0 +1,4 @@
+.eggs
+.idea
+diff.egg-info
+*.pyc
