@@ -7,9 +7,8 @@ import diff_match_patch as dmp_module
 from lxml.html import fragment_fromstring
 
 
-UNICODE_START = u'\uE000'
-
-UNICODE_KEY = [unichr(item) for item in range(ord(UNICODE_START), 0xFFFF + 1)]
+UNICODE_KEY = [unichr(item) for item in range(0xE000, 0xFFFF + 1)]
+# unicode spec not in use
 DMP = dmp_module.diff_match_patch()
 
 
