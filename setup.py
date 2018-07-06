@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='diff',
-    version='0.1',
+    version='0.0.1',
     author='liukai',
     author_email='liukai@zhihu.com',
     packages=['diff'],
