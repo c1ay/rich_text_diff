@@ -1,5 +1,5 @@
 .eggs
 .idea
-diff.egg-info
+*.egg-info
 *.pyc
 dist

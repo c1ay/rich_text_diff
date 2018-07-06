@@ -18,8 +18,8 @@ TAG_RE = re.compile('</?\w+[^>]*>')
 class ContentDiff(object):
 
     def __init__(self, new_content, old_content):
-        self.new_content = new_content
-        self.old_content = old_content
+        self.new_content = to_unicode(new_content)
+        self.old_content = to_unicode(old_content)
         self.tag_map = {}
         self.media_url = bidict()
         self.code_key = copy.deepcopy(UNICODE_KEY)
