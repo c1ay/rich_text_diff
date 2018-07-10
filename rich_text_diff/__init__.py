@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import copy
 import re
+import urllib
 
 from bidict import bidict
 import diff_match_patch as dmp_module
-from lxml.html import fragment_fromstring, tostring
+from lxml.html import fromstring, tostring
 
 
 UNICODE_KEY = [unichr(item) for item in range(0xE000, 0xFFFF + 1)]
@@ -31,14 +32,14 @@ class ContentDiff(object):
                 if tags not in self.tag_map.values():
                     self.tag_map[self.code_key.pop()] = tag
             else:
-                element = fragment_fromstring(tag)
+                element = fromstring(tag)
                 if element.tag in ('img', 'a', 'video', 'audio'):
                     self._map_media_tag(element, tag)
                 else:
                     self.tag_map[self.code_key.pop()] = tag
 
     def _map_media_tag(self, element, raw_tag):
-        url = get_url(element)
+        url = urlencode(element.attrib)
         if url in self.media_url.values():
             code = self.media_url.inv[url]
             self.tag_map[code].append(raw_tag)
@@ -49,7 +50,6 @@ class ContentDiff(object):
 
     def _replace(self, new_content, old_content):
         self._map_tag(new_content)
-        self._map_tag(old_content)
         for code, tag in self.tag_map.iteritems():
             if not isinstance(tag, list):
                 tag = [tag]
@@ -76,7 +76,6 @@ class ContentDiff(object):
 
     def _diff(self, old_content, new_content):
         diffs = DMP.diff_main(to_unicode(old_content), to_unicode(new_content))
-        import pdb;pdb.set_trace()
         html = []
         for (op, data) in diffs:
             text = self._recover(data)
@@ -87,10 +86,6 @@ class ContentDiff(object):
             elif op == 0:
                 html.append(text)
         return "".join(html)
-
-
-def get_url(element):
-    return tostring(element, encoding='utf-8')
 
 
 _TO_UNICODE_TYPES = (unicode, type(None))
@@ -107,5 +102,16 @@ def to_unicode(value):
 
 
 def ensure_closed_tag(html):
-    element = fragment_fromstring(html, create_parent='div')
+    element = fromstring(html)
     return tostring(element, encoding='utf-8')
+
+
+def urlencode(query):
+    l = []
+    for k, v in query.items():
+        if isinstance(v, unicode):
+            v = v.encode('utf-8')
+        k = urllib.quote_plus(str(k))
+        v = urllib.quote_plus(str(v))
+        l.append(k + '=' + v)
+    return '&'.join(l)
