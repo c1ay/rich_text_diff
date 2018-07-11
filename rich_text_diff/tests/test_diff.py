@@ -16,6 +16,7 @@ class TestDiff(unittest.TestCase):
         ret = rich_text_diff.ensure_closed_tag(' ')
         self.assertEqual('<div></div>', ret)
         rich_text_diff.ensure_closed_tag('<p>')
+        rich_text_diff.ensure_closed_tag('</p>')
 
 
 if __name__ == '__main__':

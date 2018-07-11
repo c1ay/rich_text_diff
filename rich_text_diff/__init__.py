@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import copy
+import logging
 import re
 import urllib
 
 from bidict import bidict
 import diff_match_patch as dmp_module
 from lxml.html import fromstring, tostring, fragment_fromstring
+from lxml import etree
 
 
 UNICODE_KEY = [unichr(item) for item in range(0xE000, 0xFFFF + 1)]
@@ -102,10 +104,11 @@ def to_unicode(value):
 
 
 def ensure_closed_tag(html):
-    if not html.strip():
-        element = fragment_fromstring(html, create_parent='div')
-    else:
+    try:
         element = fromstring(html)
+    except etree.ParserError as e:
+        logging.warn('fromstring error: {}, use fragment_fromstring'.format(e))
+        element = fragment_fromstring(html, create_parent='div')
     return tostring(element, encoding='utf-8')
 
 
