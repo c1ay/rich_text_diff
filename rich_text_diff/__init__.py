@@ -5,7 +5,7 @@ import urllib
 
 from bidict import bidict
 import diff_match_patch as dmp_module
-from lxml.html import fromstring, tostring
+from lxml.html import fromstring, tostring, fragment_fromstring
 
 
 UNICODE_KEY = [unichr(item) for item in range(0xE000, 0xFFFF + 1)]
@@ -102,7 +102,10 @@ def to_unicode(value):
 
 
 def ensure_closed_tag(html):
-    element = fromstring(html)
+    if not html.strip():
+        element = fragment_fromstring(html, create_parent='div')
+    else:
+        element = fromstring(html)
     return tostring(element, encoding='utf-8')
 
 

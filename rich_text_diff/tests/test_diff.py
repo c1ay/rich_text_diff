@@ -12,3 +12,11 @@ class TestDiff(unittest.TestCase):
         d = rich_text_diff.ContentDiff(new_content, old_content)
         d.diff()
 
+    def test_ensure_closed_tag(self):
+        ret = rich_text_diff.ensure_closed_tag(' ')
+        self.assertEqual('<div></div>', ret)
+        rich_text_diff.ensure_closed_tag('<p>')
+
+
+if __name__ == '__main__':
+    unittest.main()
