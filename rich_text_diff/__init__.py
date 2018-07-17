@@ -20,6 +20,10 @@ TAG_RE = re.compile('</?\w+[^>]*>')
 
 class ContentDiff(object):
 
+    INSERT = 1
+    DELETE = -1
+    EQUAL = 0
+
     def __init__(self, new_content, old_content):
         self.new_content = to_unicode(new_content)
         self.old_content = to_unicode(old_content)
@@ -81,11 +85,11 @@ class ContentDiff(object):
         html = []
         for (op, data) in diffs:
             text = self._recover(data)
-            if op == 1:
+            if op == self.INSERT:
                 html.append("<ins style=\"background:#e6ffe6;\">{}</ins>".format(text))
-            elif op == -1:
+            elif op == self.DELETE:
                 html.append("<del style=\"background:#ffe6e6;\">{}</del>".format(text))
-            elif op == 0:
+            elif op == self.EQUAL:
                 html.append(text)
         return "".join(html)
 
