@@ -76,6 +76,8 @@ class ContentDiff(object):
         return ensure_closed_tag(content)
 
     def diff(self):
+        if self.new_content == self.old_content:
+            return self.new_content
         new_content, old_content = self._replace(self.new_content, self.old_content)
         content = self._diff(old_content, new_content)
         return content
