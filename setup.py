@@ -9,6 +9,9 @@ setup(
     description='support rich text diff',
     packages=['rich_text_diff'],
     test_suite='nose.collector',
+    python_requires='>=2.7',
+    long_description='readme',
+    long_description_content_type='text/markdown',
     url='https://github.com/c1ay/rich_text_diff',
     tests_require=['nose'],
     install_requires=[
