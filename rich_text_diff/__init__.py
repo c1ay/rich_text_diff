@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 import copy
+import sys
 import logging
 import re
-import urllib
 
 from bidict import bidict
 import diff_match_patch as dmp_module
 from lxml.html import fromstring, tostring, fragment_fromstring
 from lxml import etree
 
+if sys.version_info < (3,):
+    chr = unichr
+    unicode_type = unicode
+else:
+    unicode_type = str
 
-UNICODE_KEY = [unichr(item) for item in range(0xE000, 0xFFFF + 1)]
+UNICODE_KEY = [chr(item) for item in range(0xE000, 0xFFFF + 1)]
 # unicode spec not in use
 DMP = dmp_module.diff_match_patch()
 
@@ -45,23 +50,23 @@ class ContentDiff(object):
                     self.tag_map[self.code_key.pop()] = tag
 
     def _map_media_tag(self, element, raw_tag):
-        url = urlencode(element.attrib)
-        if url in self.media_url.values():
-            code = self.media_url.inv[url]
+        tag_key = gen_tag_key(element.attrib)
+        if tag_key in self.media_url.values():
+            code = self.media_url.inv[tag_key]
             self.tag_map[code].append(raw_tag)
             return
         code = self.code_key.pop()
         self.tag_map[code] = [raw_tag]
-        self.media_url[code] = url
+        self.media_url[code] = tag_key
 
     def _replace(self, new_content, old_content):
         self._map_tag(new_content)
-        for code, tag in self.tag_map.iteritems():
+        for code, tag in self.tag_map.items():
             if not isinstance(tag, list):
                 tag = [tag]
             for item in tag:
                 new_content = new_content.replace(item, code)
-        for code, tag in self.tag_map.iteritems():
+        for code, tag in self.tag_map.items():
             if not isinstance(tag, list):
                 tag = [tag]
             for item in tag:
@@ -69,7 +74,7 @@ class ContentDiff(object):
         return to_unicode(new_content), to_unicode(old_content)
 
     def _recover(self, content):
-        for code, tag in self.tag_map.iteritems():
+        for code, tag in self.tag_map.items():
             if isinstance(tag, list):
                 tag = tag[0]
             content = content.replace(code, tag)
@@ -96,7 +101,7 @@ class ContentDiff(object):
         return "".join(html)
 
 
-_TO_UNICODE_TYPES = (unicode, type(None))
+_TO_UNICODE_TYPES = (unicode_type, type(None))
 
 
 def to_unicode(value):
@@ -115,15 +120,9 @@ def ensure_closed_tag(html):
     except etree.ParserError as e:
         logging.warn('fromstring error: {}, use fragment_fromstring'.format(e))
         element = fragment_fromstring(html, create_parent='div')
-    return tostring(element, encoding='utf-8')
+    return to_unicode(tostring(element, encoding='utf-8'))
 
 
-def urlencode(query):
-    l = []
-    for k, v in query.items():
-        if isinstance(v, unicode):
-            v = v.encode('utf-8')
-        k = urllib.quote_plus(str(k))
-        v = urllib.quote_plus(str(v))
-        l.append(k + '=' + v)
+def gen_tag_key(query):
+    l = ["{}={}".format(to_unicode(k), to_unicode(v)) for k, v in query.items()]
     return '&'.join(l)
