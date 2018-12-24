@@ -78,7 +78,7 @@ class ContentDiff(object):
             if isinstance(tag, list):
                 tag = tag[0]
             content = content.replace(code, tag)
-        return utf8(ensure_closed_tag(content))
+        return ensure_closed_tag(content)
 
     def diff(self):
         if self.new_content == self.old_content:
@@ -93,12 +93,12 @@ class ContentDiff(object):
         for (op, data) in diffs:
             text = self._recover(data)
             if op == self.INSERT:
-                html.append("<ins style=\"background:#e6ffe6;\">{}</ins>".format(text))
+                html.append(u"<ins style=\"background:#e6ffe6;\">{}</ins>".format(text))
             elif op == self.DELETE:
-                html.append("<del style=\"background:#ffe6e6;\">{}</del>".format(text))
+                html.append(u"<del style=\"background:#ffe6e6;\">{}</del>".format(text))
             elif op == self.EQUAL:
                 html.append(text)
-        return "".join(html)
+        return utf8(u"".join(html))
 
 
 _TO_UNICODE_TYPES = (unicode_type, type(None))
@@ -127,7 +127,7 @@ def ensure_closed_tag(html):
     try:
         element = fromstring(html)
     except etree.ParserError as e:
-        logging.warn('fromstring error: {}, use fragment_fromstring'.format(e))
+        logging.warning('fromstring error: {}, use fragment_fromstring'.format(e))
         element = fragment_fromstring(html, create_parent='div')
     return to_unicode(tostring(element, encoding='utf-8'))
 
