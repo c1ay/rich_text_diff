@@ -1,4 +1,5 @@
 # rich_text_diff
+[![Build Status](https://travis-ci.org/c1ay/rich_text_diff.svg?branch=master)](https://travis-ci.org/c1ay/rich_text_diff)
 [![image](https://img.shields.io/pypi/v/rich-text-diff.svg)](https://pypi.org/project/rich-text-diff/)
 [![image](https://img.shields.io/pypi/l/rich-text-diff.svg)](https://pypi.org/project/rich-text-diff/)
 [![image](https://img.shields.io/pypi/pyversions/rich-text-diff.svg)](https://pypi.org/project/rich-text-diff/)
