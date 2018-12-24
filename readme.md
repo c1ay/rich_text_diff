@@ -1,4 +1,19 @@
-支持富文本的文本对比
+# rich_text_diff
+[![image](https://img.shields.io/pypi/v/rich-text-diff.svg)](https://pypi.org/project/rich-text-diff/)
+[![image](https://img.shields.io/pypi/l/rich-text-diff.svg)](https://pypi.org/project/rich-text-diff/)
+[![image](https://img.shields.io/pypi/pyversions/rich-text-diff.svg)](https://pypi.org/project/rich-text-diff/)
+
+> support rich text(html) diff
+
+## Installation
+
+OS X & Linux & Windows
+
+```sh
+pip install rich-text-diff
+```
+
+## Usage Exmaple
 
 ```python
 import rich_text_diff as diff
@@ -8,3 +23,4 @@ old_content = u'<p>\u4eca\u5929\u5929\u6c14\u8fd8233</p><p>\u4eca\u5929\u5929\u6
 
 print diff.ContentDiff(new_content, old_content).diff()
 ```
+
