@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='rich_text_diff',
-    version='0.0.5',
+    version='0.0.6',
     author='liukai',
     author_email='liukai@zhihu.com',
     description='support rich text diff',

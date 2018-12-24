@@ -78,7 +78,7 @@ class ContentDiff(object):
             if isinstance(tag, list):
                 tag = tag[0]
             content = content.replace(code, tag)
-        return ensure_closed_tag(content)
+        return utf8(ensure_closed_tag(content))
 
     def diff(self):
         if self.new_content == self.old_content:
@@ -102,6 +102,7 @@ class ContentDiff(object):
 
 
 _TO_UNICODE_TYPES = (unicode_type, type(None))
+_UTF8_TYPES = (bytes, type(None))
 
 
 def to_unicode(value):
@@ -112,6 +113,14 @@ def to_unicode(value):
             "Expected bytes, unicode, or None; got %r" % type(value)
         )
     return value.decode("utf-8")
+
+
+def utf8(value):
+    if isinstance(value, _UTF8_TYPES):
+        return value
+    if not isinstance(value, unicode_type):
+        raise TypeError("Expected bytes, unicode, or None; got %r" % type(value))
+    return value.encode("utf-8")
 
 
 def ensure_closed_tag(html):
